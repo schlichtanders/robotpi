@@ -1,0 +1,50 @@
+# INIT ROS GROOVY
+# ---------------
+
+# see this wiki for general installation
+http://wiki.ros.org/groovy/Installation/Raspbian
+
+# additional packages required for usb_cam driver
+sudo apt-get install ros-groovy-image_common ros-groovy-diagnostics
+sudo apt-get install libavcodec-dev libswscale-dev libtinyxml-dev
+
+
+# INIT WORKSPACE
+# --------------
+
+# create catkin workspace:
+source /opt/ros/groovy/setup.bash  # .zsh or .sh depends on the SHELL you use
+mkdir -p ~/ros-groovy/wet/src/
+cd ~/ros-groovy/wet/src/
+wstool init
+wstool merge wet.rosinstall
+wstool update
+catkin_init_workspace
+cd ~/ros-groovy/wet
+catkin_make
+source ~/ros-groovy/wet/devel/setup.bash  # .zsh or .sh depends on the SHELL you use
+
+# create rosbuild workspace:
+mkdir ~/ros-groovy/dry
+cd ~/ros-groovy/dry/
+rosws init . ~/ros-groovy/wet/devel
+rosws merge dry.rosinstall
+# TODO (untested) you may have to manually update ROS_PACKAGE_PATH variable, appending the new packages
+rosws update
+
+# build wet space
+cd ~/ros-groovy/wet
+source ~/ros-groovy/wet/devel/setup.bash # .zsh or .sh depends on the SHELL you use
+catkin_make
+
+# build dry space
+cd ~/ros-groovy/dry
+source ~/ros-groovy/dry/setup.bash  # .zsh or .sh depends on the SHELL you use
+rosmake -a
+
+
+# To load the workspace within each terminal do:
+# either append the following to your ~/.bashrc
+source ~/ros-groovy/dry/setup.bash
+# or (what is equal, but will append it several times if you repeat it):
+echo "source ~/ros-groovy/dry/setup.bash" >> ~/.bashrc
