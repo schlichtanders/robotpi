@@ -1,0 +1,6 @@
+ROS_NAMESPACE=stereo rosrun stereo_image_proc ster_image_proc _approximate_sync:=true _queue_size:=30
+
+rosrun image_view stereo_view stereo:="stereo" ima:="image_raw" _approximate_sync:=true _queue_size:=30
+
+rosrun image_view disparity_view image:=stereo/disparity
+
